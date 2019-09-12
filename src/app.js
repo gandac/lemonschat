@@ -40,7 +40,7 @@ firebase.auth().onAuthStateChanged((user) => {
     store.dispatch(setStartState());    
     renderApp();
     if (history.location.pathname === '/') {
-      history.push('/join');
+      //history.push('/join');
     }
   } else {
     store.dispatch(logout());

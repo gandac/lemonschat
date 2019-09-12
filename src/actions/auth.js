@@ -5,11 +5,40 @@ export const login = (uid, displayName) => ({
   uid,
   displayName
 });
-
+export const startEmailLogin = (email,password) => {
+  return dispatch => {
+      firebase.auth().signInWithEmailAndPassword(email, password)
+      .then ( result => {
+        console.log('result' , result);
+      })
+      .catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(error);
+      // ...
+    });
+  }
+}
+export const signInAnonymously = () => {
+  return dispatch => {
+    return firebase.auth().signInAnonymously().catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+    
+      if (errorCode === 'auth/operation-not-allowed') {
+        alert('You must enable Anonymous auth in the Firebase Console.');
+      } else {
+        console.error(error);
+      }
+    });
+  }
+}
 export const startLogin = () => {
   return () => {
     // return firebase.auth().signInWithPopup(googleAuthProvider);
-    return firebase.auth().signInWithRedirect(provider);
+   return firebase.auth().signInWithRedirect(provider);
     firebase.auth().getRedirectResult().then(function(result) {
       // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       var token = result.credential.accessToken;

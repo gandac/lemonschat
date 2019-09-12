@@ -6,12 +6,13 @@ import * as path from 'path';
 
 
 
-export const createRoom = ({ id, name, people, messages = [] }) => ({
+export const createRoom = ({ id, name, people, date, messages = [] }) => ({
   type: 'CREATE_ROOM',
   room: {
     id,
     name,
     people,
+    date,
     messages
   }
 });
@@ -21,6 +22,7 @@ export const startCreateRoom = (roomper = {}, showCreateError) => {
   return (dispatch, getState) => {
     const room = {
       name: roomper.name,
+      date: roomper.date,
     }
     return database.ref('rooms').once('value', (snapshot) => {
       const rooms = [];
@@ -36,6 +38,7 @@ export const startCreateRoom = (roomper = {}, showCreateError) => {
 
             dispatch(createRoom({
               ...roomper,
+              date: room.date,
               people: [roomper.people]
             }));
             const perName = roomper.people.name;
@@ -98,7 +101,31 @@ const isAlreadyAdded = (data, id) => {
   }
   return false;
 }
-
+export const saveLastRoom = (lastRoom) => {
+  return {
+    type: 'LAST_ROOM',
+    lastRoom: lastRoom
+  }
+}
+export const  getLastAddedRoom = () => {
+    return (dispatch, getState) => {
+      const state = getState();
+    return database.ref('rooms').once('value', (snapshot) => {
+        const rooms = [];
+        snapshot.forEach((childSnapshot) => {
+          rooms.push({
+            ...childSnapshot.val()
+          });
+        });
+        rooms.sort(function(a, b){
+          return a.date-b.date
+        })
+        const lastRoom = rooms[rooms.length - 1];
+        console.log('lastRoom' , lastRoom);
+        return dispatch(saveLastRoom(lastRoom));
+    });
+  }
+}
 export const startJoinRoom = (data = {}, showJoinError) => {
   return (dispatch, getState) => {
     const state = getState();

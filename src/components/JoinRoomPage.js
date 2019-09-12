@@ -16,10 +16,13 @@ export class JoinRoomPage extends React.Component {
     const value = e.target.rname.value.trim();
     if(user) {
       const name = user.displayName;
+      const thisTime = Date.now();
       if(value) {
         this.setState({error: ''});
+        
         const room = {
           name: value,
+          date: thisTime,
           people: {
             id: user.uid,
             name,

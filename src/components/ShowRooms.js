@@ -22,9 +22,9 @@ class ShowRooms extends React.Component {
     const rooms = this.props.rooms;
     // console.log(rooms);
     if(rooms.length > 0){
-      const a = rooms.map((room) => {
+      const a = rooms.map((room,index) => {
         // console.log(room);
-        return <div key={room.id} className="room-name-wrapper"><button className="button--unread-messages" onClick={() => this.props.startClearUnread(room.name) }>{this.showUnread(room)}</button><NavLink  to={`/room/${room.name}`} activeClassName="room-selected"><div className='room-name'>{room.name}</div></NavLink></div>;
+        return <div key={index} className="room-name-wrapper wrapperssss"><button className="button--unread-messages" onClick={() => this.props.startClearUnread(room.name) }>{this.showUnread(room)}</button><NavLink  to={`/room/${room.name}`} activeClassName="room-selected"><div className='room-name'>{room.name}</div></NavLink></div>;
       });
       return a;
     }
@@ -34,11 +34,11 @@ class ShowRooms extends React.Component {
   render() {
     return (
       <div className="container__left">
-      <div className="container__left__text">
-        {
-          this.returnRooms()
-        }
-        </div>
+        <div className="container__left__text">
+          {
+            this.returnRooms()
+          }
+          </div>
       </div>
     );
   }
