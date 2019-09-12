@@ -1,10 +1,12 @@
 import database, { firebase, githubAuthProvider as provider } from '../firebase/firebase';
 
-export const login = (uid, displayName) => ({
-  type: 'LOGIN',
-  uid,
-  displayName
-});
+export const login = (uid, displayName ) => { 
+  return {
+    type: 'LOGIN',
+    uid,
+    displayName,
+  };
+}
 export const startEmailLogin = (email,password) => {
   return dispatch => {
       firebase.auth().signInWithEmailAndPassword(email, password)

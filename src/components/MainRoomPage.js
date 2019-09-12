@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { startSendMessage, startLeaveRoom, startClearUnread,startJoinRoom,getLastAddedRoom } from '../actions/rooms';
+import { joinLastCreatedRoom , startSendMessage} from '../actions/mainRoom';
+//import { startSendMessage} from '../actions/rooms';
 import Messages from './Messages';
 import PeopleModal from './PeopleModal';
 
@@ -15,24 +16,38 @@ import PeopleModal from './PeopleModal';
 
 export class RoomPage extends React.Component {
 
-  state = {
-    showModal: false
-  }
-  componentDidMount(){
-    this.props.getLastAddedRoom();
+state = {
+showModal: false,
+error: '',
+joinError: ''
+}
+
+componentDidMount(){
+
+    //store.dispatch(login(user.uid, name));
     const user = this.props.auth;
-    if ( !user.uid ){
+    if ( user.uid ){
+        if(!this.props.rooms[0]){
+        //this.props.joinLastCreatedRoom(user);
+        }
         const data = {
             roomName: this.props.lastRoom.name,
             id: user.uid,
             name: user.displayName,
             unread: 0
         }
-        this.props.startJoinRoom(data, this.showJoinError);
+      
     }
-    }
+}
 
   roomName = this.props.lastRoom.name;
+
+  showJoinError = (joinError) => {
+    this.setState({
+      joinError 
+    });
+  }
+
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -42,13 +57,14 @@ export class RoomPage extends React.Component {
       e.target.submit.diabled = true;
       return;
     }
+  
 
-    this.props.startSendMessage(message, this.roomName);
+    this.props.startSendMessage(message, this.props.lastRoom.name);
     e.target.reset();
   }
 
   handleLeaveRoom = () => {
-    this.props.startLeaveRoom(this.roomName);
+    this.props.startLeaveRoom(this.props.lastRoom.roomName);
   }
 
   showPeople = () => {
@@ -71,15 +87,15 @@ export class RoomPage extends React.Component {
   // }
 
   componentDidUpdate() {
-    // const rooms = this.props.rooms;
-    // if (rooms.length > 0) {
-    //   const a = rooms.find((room) => {
-    //     return room.name === this.roomName;
-    //     // const roomPath = a.id;
-    //     // this.props.startClearUnread(this.roomName);
-    //   });
+    const rooms = this.props.rooms;
+    if (rooms.length > 0) {
+      const a = rooms.find((room) => {
+        return room.name === this.props.lastRoom.name;
+        // const roomPath = a.id;
+         this.props.startClearUnread(this.roomName);
+      });
       
-    // }
+    }
   }
 
   render() {
@@ -90,13 +106,13 @@ export class RoomPage extends React.Component {
           <div className="room-header__title">{this.props.lastRoom.name}</div>
           <button onClick={this.handleLeaveRoom} className="button--leave-room">Leave room</button>
         </div>
-        <Messages roomName={this.roomName} />
+        <Messages roomName={this.props.lastRoom.name} />
         <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
           <input type="text" name="message" className="text-input" placeholder="Send message" autoFocus />
           <button name="submit" className="login-button">Send</button>
         </form>
         <PeopleModal
-          roomName={this.roomName}
+          roomName={this.props.lastRoom.name}
           showModal={this.state.showModal}
           closeModal={this.closeModal}
         />
@@ -106,17 +122,15 @@ export class RoomPage extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    auth: state.auth,
+  auth: state.auth,
   rooms: state.rooms,
   lastRoom: state.lastRoom
 });
 
 const mapDispatchToProps = (dispatch) => ({
   startSendMessage: (message, roomName) => dispatch(startSendMessage(message, roomName)),
-  startLeaveRoom: (roomName) => dispatch(startLeaveRoom(roomName)),
-  startClearUnread: (roomName) => dispatch(startClearUnread(roomName)),
   getLastAddedRoom: () => dispatch(getLastAddedRoom()),
-  startJoinRoom: (data, showJoinError) => dispatch(startJoinRoom(data, showJoinError))
+  joinLastCreatedRoom: (user) => dispatch(joinLastCreatedRoom(user))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomPage);

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import AppRouter, { history } from './routers/AppRouter';
 import configureStore from './store/configureStore';
-import { login, logout } from './actions/auth';
+import { login, logout , signInAnonymously } from './actions/auth';
 import { sendMessage } from './actions/rooms';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
@@ -11,6 +11,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import database, { firebase } from './firebase/firebase';
 import LoadingPage from './components/LoadingPage';
 import { setStartState, clearState } from './actions/rooms';
+import {joinLastCreatedRoom} from './actions/mainRoom';
 
 const store = configureStore();
 const jsx = (
@@ -35,18 +36,35 @@ ReactDOM.render(<LoadingPage />, document.getElementById('app'));
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // console.log(user)
-    const name = user.displayName ? user.displayName : user.email;    
-    store.dispatch(login(user.uid, name));
-    store.dispatch(setStartState());    
-    renderApp();
+    const name = user.displayName ? 
+                    user.displayName :
+                     user.email ? 
+                     user.email :
+                     'Anonim';
+      console.log('loggggg' , user.isAnonymous)
+    store.dispatch(login(user.uid, name , user.isAnonymous , user.anonimNumber  , user.totalWords));
     if (history.location.pathname === '/') {
-      //history.push('/join');
+     // store.dispatch(setStartStateMainPage()); 
+
+     store.dispatch(joinLastCreatedRoom(user));
+     //store.dispatch(startListening(store.lastRoom.name));   
+    }else{
+      store.dispatch(setStartState());    
     }
-  } else {
-    store.dispatch(logout());
-    store.dispatch(clearState);
+
     renderApp();
-    history.push('/');
+
+    console.log('onAuthStateChanged!!! user on ');
+  } else {
+    if (history.location.pathname === '/') {
+      store.dispatch(signInAnonymously());
+    }else{
+      store.dispatch(logout());
+      store.dispatch(clearState);
+      renderApp();
+      history.push('/');
+      console.log('onAuthStateChanged!!! user off ');
+    }
   }
 });
 

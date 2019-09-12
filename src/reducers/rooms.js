@@ -118,6 +118,25 @@ export default (state=defaultState, action) => {
         }
       });
 
+      case 'UPDATE_TOTAL_WORDS':
+      return state.map((room) => {
+        if(room.name === action.roomName) {
+          const people = room.people.map((p) => {
+            if(p.id === action.uid) {
+              return {
+                ...p,
+                totalWords: action.totalWords,
+              }
+            } else {
+              return p;
+            }
+          });
+          return {...room, people}
+        } else {
+          return room;
+        }
+      });
+
     case 'LEAVE_ROOM':
       return state.filter((room) => {
         return room.name !== action.roomName;

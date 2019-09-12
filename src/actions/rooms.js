@@ -63,6 +63,7 @@ export const startListening = (roomName) => {
       if (getState().rooms.find((r) => r.name === roomName)) {
         database.ref(`rooms/${roomName}/people`).once('value', (personSnapshot) => {            
           const message = msgSnapshot.val();
+          console.log('messss',message);
           dispatch(sendMessage({ ...message, id: msgSnapshot.key }, roomName));
           dispatch(orderRoomsStartState());
           if(message.sender.displayName!==getState().auth.displayName) {
@@ -101,22 +102,17 @@ const isAlreadyAdded = (data, id) => {
   }
   return false;
 }
-export const saveLastRoom = (lastRoom) => {
-  return {
-    type: 'LAST_ROOM',
-    lastRoom: lastRoom
-  }
-}
+
 export const  getLastAddedRoom = () => {
     return (dispatch, getState) => {
       const state = getState();
     return database.ref('rooms').once('value', (snapshot) => {
         const rooms = [];
-        snapshot.forEach((childSnapshot) => {
-          rooms.push({
-            ...childSnapshot.val()
+          snapshot.forEach((childSnapshot) => {
+            rooms.push({
+              ...childSnapshot.val()
+            });
           });
-        });
         rooms.sort(function(a, b){
           return a.date-b.date
         })
@@ -136,9 +132,11 @@ export const startJoinRoom = (data = {}, showJoinError) => {
         return showJoinError('Room not found!');
       }
       else if (value.people && value.people[id]) {
+        console.log('is doingg nothing');
         history.push(`room/${data.roomName}`);
       }
       else {
+        
         dispatch(startListening(data.roomName));
         const person = {
           name: data.name,
@@ -208,44 +206,46 @@ export const orderRoomsStartState = () => ({
 });
 
 export const setStartState = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     // console.log('setting start state');
     const uid = getState().auth.uid;
     if (uid) {
       // console.log('user found');
-      return database.ref(`users/${uid}`).once('value', (snapshot) => {
-        if (snapshot.val()) {
-          console.log('snapshot',snapshot.val());
-          const rooms = snapshot.val().rooms;
-          console.log(rooms);
-          for (var key in rooms) {
+       const roomsRef = database.ref(`users/${uid}`);
+       const roomsSnapshot = await roomsRef.once('value');
+       const rooms = roomsSnapshot.val().rooms;
+        console.log('the roooms' , rooms);
+        for (var key in rooms) {
             console.log(key);
             dispatch(startListening(key));
-            database.ref(`rooms/${key}`).once('value', (snapshot) => {
-              const room = snapshot.val();
-              const { name, people, messages } = room;
-              let peopleArray = [], messagesArray = [];
-              for (var peopleKey in people) {
-                peopleArray.push(people[peopleKey]);
-              }
-              for (var messagesKey in messages) {
-                messagesArray.push({ ...messages[messagesKey], id: messagesKey });
-              }
-              console.log('creating room');
-              dispatch(createRoom({
-                name,
-                people: peopleArray,
-                messages: messagesArray
-              }));
-            });
-          }
+            const createRef = database.ref(`rooms/${key}`);
+            const snapshot = await createRef.once('value');
+            const room = snapshot.val();
+              console.log('heeeeereeee', room);
+              if(room){
+                const { name, people, messages } = room;
+                let peopleArray = [], messagesArray = [];
+                for (var peopleKey in people) {
+                  peopleArray.push(people[peopleKey]);
+                }
+                for (var messagesKey in messages) {
+                  messagesArray.push({ ...messages[messagesKey], id: messagesKey });
+                }
+                console.log('creating room');
+                dispatch(createRoom({
+                  name,
+                  people: peopleArray,
+                  messages: messagesArray
+                }));
+             }
+            }
+          
+        }
           // console.log('hello')
           dispatch(orderRoomsStartState());
         }
-      });
+  
     }
-  };
-}
 
 export const clearState = ({
   type: 'CLEAR_STATE'
