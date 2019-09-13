@@ -14,6 +14,10 @@ export const clearUnread = (roomName, uid, time, unread) => ({
   time,
   unread
 });
+export const saveUserInfo = (person) => ({
+  type: 'SAVE_USER_INFO',
+  person
+});
 
 export const setUnread = (roomName, uid, time, unread) => {
   return (dispatch) => {
@@ -97,6 +101,12 @@ export const  getLastAddedRoom = () => {
      
   }
 }
+export const updateCurrentUserWordCount = (count) => {
+  return {
+    type : "UPDATE_USER_MESSAGE_COUNT",
+    count:count,
+  }
+}
 //Method that checks if the user is already in the channel, subscribe the user to the channel, subscribe react app to firebase
 export const joinLastCreatedRoom = (user) => {
 
@@ -111,7 +121,6 @@ export const joinLastCreatedRoom = (user) => {
     const snapshot = await dbRef.once('value');
     const value = snapshot.val()
 
-      const id = user.id;
       if (value === null) {
         return showJoinError('Room not found!');
       } else {
@@ -148,6 +157,7 @@ export const joinLastCreatedRoom = (user) => {
           name: lastRoom.name,
           messages
         }));
+        let storePerson = person;
         if ( !(user.uid in value.people)) {
           const personRef = database.ref(`rooms/${lastRoom.name}/people/${person.id}`); 
           const ref = await personRef.set(person);
@@ -156,14 +166,13 @@ export const joinLastCreatedRoom = (user) => {
 
           const perName = person.name;
 
-          dispatch(startSendMessage(`${person.anonimNumber} joined`, lastRoom.name, true));
+          dispatch(startSendMessage(`${person.anonimNumber} joined`, lastRoom.name, true)); 
+        }else{
+          // user is already in db get current user in the current room
+          console.log('value.people' , value.people)
+             storePerson = value.people[user.uid];
         }
-        
-
-
-
-          // history.push(`room/${data.roomName}`);
-
+        dispatch(saveUserInfo(storePerson));
       }
 
   }
@@ -207,6 +216,7 @@ export const startSendMessage = (text, roomName, status = false) => {
           createdAt: moment().format(),
           status
         };
+        dispatch(updateCurrentUserWordCount(totalWords));
         return database.ref(`rooms/${roomName}/messages`).push(message);
       }else{
         console.log('user Not found in Room');
@@ -220,8 +230,8 @@ export const orderRoomsStartState = () => ({
 });
 
 
-export const clearState = ({
-  type: 'CLEAR_STATE'
+export const clearStateMainRoom = ({
+  type: 'CLEAR_STATE_MAIN_ROOM',
 })
 
 export const onLeft = (roomName, personID) => ({
