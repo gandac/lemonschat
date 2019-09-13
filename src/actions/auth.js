@@ -1,10 +1,11 @@
 import database, { firebase, githubAuthProvider as provider } from '../firebase/firebase';
 
-export const login = (uid, displayName ) => { 
+export const login = (uid, displayName , isAnonymous) => { 
   return {
     type: 'LOGIN',
     uid,
     displayName,
+    isAnonymous
   };
 }
 export const startEmailLogin = (email,password) => {

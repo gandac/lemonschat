@@ -35,36 +35,34 @@ ReactDOM.render(<LoadingPage />, document.getElementById('app'));
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    // console.log(user)
     const name = user.displayName ? 
                     user.displayName :
                      user.email ? 
                      user.email :
                      'Anonim';
-      console.log('loggggg' , user.isAnonymous)
-    store.dispatch(login(user.uid, name , user.isAnonymous , user.anonimNumber  , user.totalWords));
-    if (history.location.pathname === '/') {
-     // store.dispatch(setStartStateMainPage()); 
+    store.dispatch(login(user.uid, name , user.isAnonymous));
 
-     store.dispatch(joinLastCreatedRoom(user));
-     //store.dispatch(startListening(store.lastRoom.name));   
+    if(user.isAnonymous) {
+      store.dispatch(joinLastCreatedRoom(user));
     }else{
-      store.dispatch(setStartState());    
+      store.dispatch(setStartState());   
+      history.push('/admin')
     }
 
-    renderApp();
+    console.log('User Authenthicated! Guest?' ,user.isAnonymous );
 
-    console.log('onAuthStateChanged!!! user on ');
   } else {
+
     if (history.location.pathname === '/') {
       store.dispatch(signInAnonymously());
     }else{
       store.dispatch(logout());
       store.dispatch(clearState);
-      renderApp();
-      history.push('/');
-      console.log('onAuthStateChanged!!! user off ');
+     // history.push('/');
+      console.log('User Logged Off!'  );
     }
+
   }
+  renderApp();
 });
 

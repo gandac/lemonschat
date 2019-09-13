@@ -6,11 +6,12 @@ import ShowRooms from '../components/ShowRooms';
 
 export const PrivateRoute = ({
   isAuthenticated,
+  isAdmin,
   component: Component,
   ...rest
 }) => (
     <Route {...rest} component={(props) => (
-      isAuthenticated ? (
+      isAuthenticated  && isAdmin ? (
         <div>
           <Header />
           <div className='container'>
@@ -25,7 +26,8 @@ export const PrivateRoute = ({
   );
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.uid
+  isAuthenticated: !!state.auth.uid,
+  isAdmin: !state.auth.isAnonymous
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

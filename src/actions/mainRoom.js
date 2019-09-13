@@ -144,7 +144,7 @@ export const joinLastCreatedRoom = (user) => {
         console.log('lastRoom', lastRoom);
         console.log('theUser', user);
         dispatch(createRoom({
-          people: [...people],
+          people: [...people,person],
           name: lastRoom.name,
           messages
         }));
@@ -156,7 +156,7 @@ export const joinLastCreatedRoom = (user) => {
 
           const perName = person.name;
 
-          dispatch(startSendMessage(`${perName} joined`, lastRoom.name, true));
+          dispatch(startSendMessage(`${person.anonimNumber} joined`, lastRoom.name, true));
         }
         
 
@@ -184,14 +184,20 @@ export const sendMessage = (message, roomName) => ({
 export const startSendMessage = (text, roomName, status = false) => {
   return (dispatch, getState) => {
     const authUser = getState().auth;
-    if( authUser){
 
+    if( authUser){
+      console.log('message sent started!' , authUser);
+      console.log('compare this mpther',getState().rooms[0].people.filter( el =>  el.id == authUser.uid ));
       let user = getState().rooms[0].people.filter( el =>  el.id == authUser.uid )[0];
+      
       if (user) {
         const uid = user.id;
         const displayName = user.name;
         const isAnonymous = user.isAnonymous;
-        const totalWords = user.totalWords - countWords(text);
+        let totalWords = user.totalWords - countWords(text);
+        if(status){
+          totalWords = user.totalWords;
+        }
         const anonimNumber = user.anonimNumber;
         
         console.log('log sending message from the main room' , user)
@@ -202,6 +208,8 @@ export const startSendMessage = (text, roomName, status = false) => {
           status
         };
         return database.ref(`rooms/${roomName}/messages`).push(message);
+      }else{
+        console.log('user Not found in Room');
       }
     }
   };

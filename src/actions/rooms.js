@@ -267,7 +267,7 @@ export const startLeaveRoom = (roomName) => {
       database.ref(`users/${userId}/rooms/${roomName}`).remove(() => {
         dispatch(leaveRoom(roomName, userId));
         dispatch(startSendMessage(`${displayName} left`, roomName, true));
-        history.push('/join');
+        history.push('/admin');
       });
     }
   };
