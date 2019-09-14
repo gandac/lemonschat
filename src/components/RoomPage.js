@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom';
 import { startSendMessage, startLeaveRoom, startClearUnread } from '../actions/rooms';
 import Messages from './Messages';
 import PeopleModal from './PeopleModal';
@@ -73,9 +74,11 @@ export class RoomPage extends React.Component {
     return (
       <div className="box-layout--messages">
         <div className="room-header">
-          <button onClick={this.showPeople} className="button--leave-room">View People</button>
+        <Link to="/admin" className="button--leave-room" >Back to admin</Link>
+          
           <div className="room-header__title">{this.props.location.pathname.split('/').slice(-1)[0]}</div>
-          <button onClick={this.handleLeaveRoom} className="button--leave-room">Leave room</button>
+          <button onClick={this.handleLeaveRoom} className="button--leave-room" style={{"display":"none"}}>Leave room</button>
+          <button onClick={this.showPeople} className="button--leave-room">View People</button>
         </div>
         <Messages roomName={this.roomName} />
         <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">

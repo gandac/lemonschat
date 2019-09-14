@@ -1,33 +1,36 @@
 import database, { firebase } from '../firebase/firebase';
-import * as actionTypes from 'types';
+import * as actionTypes from './types';
 
 
 const getBlockWordsRequest = () => {
     return {
-        type: actionTypes.GET_ALL_BLOCKED_WORDS_REQUEST
+        type: actionTypes.GET_BLOCKED_WORDS_REQUEST
     }
 }
 
 const getBlockWordsSuccess= (action) => {
     return {
-        type: actionTypes.GET_ALL_BLOCKED_WORDS_SUCCESS,
+        type: actionTypes.GET_BLOCKED_WORDS_SUCCESS,
         blockedWords: action
     }
 }
 const getBlockWordsError= (error) => {
     return {
-        type: actionTypes.GET_ALL_BLOCKED_WORDS_ERROR,
+        type: actionTypes.GET_BLOCKED_WORDS_ERROR,
         error: error
     }
 }
 
 export const getBlockWords = () => {
-    return  (dispatch,getState) => {
+    return (dispatch,getState) => {
         dispatch(getBlockWordsRequest());
-
         const dbRef =  database.ref(`blockedWords`);
         dbRef.once('value').then((snapshot)=>{
-            const blockedWords = snapshot.val();
+            const blockedWords = []
+            snapshot.forEach((childSnapshot) => {
+
+                blockedWords.push(childSnapshot.val());
+            });
             dispatch(getBlockWordsSuccess(blockedWords));
         }).catch(error => {
             dispatch(getBlockWordsError(error));
@@ -43,13 +46,13 @@ const insertBlockWordsRequest = () => {
 
 const insertBlockWordsSuccess = (word) => {
     return {
-        type: actionTypes.INSERT_BLOCKED_WORDS_SUCCESS,
-        blockWord: [word]
+        type: actionTypes.INSERT_BLOCK_WORD_SUCCESS,
+        blockWord: word
     }
 }
 const insertBlockWordsError = (error) => {
     return {
-        type: actionTypes.INSERT_BLOCKED_WORDS_ERROR,
+        type: actionTypes.INSERT_BLOCK_WORD_ERROR,
         error: error
     }
 }
@@ -58,13 +61,11 @@ export const insertBlockWords = (word) => {
     return  (dispatch,getState) => {
 
         dispatch(insertBlockWordsRequest());
-
-        const dbRef =  database.ref(`blockedWords/`);
-        dbRef.set(word).then((snapshot)=>{
-            const blockedWords = snapshot.val();
-            dispatch(insertBlockWordsSuccess(blockedWords));
-
+        const saveWord = word.trim();
+        const dbRef =  database.ref(`blockedWords/${saveWord}`).set(saveWord).then((snapshot)=>{
+            dispatch(insertBlockWordsSuccess(saveWord));
         }).catch(error => {
+            console.log('errrrrrrrrrorrrrrrrrrrrr', error);
             dispatch(insertBlockWordsError(error));
         });
     }
@@ -79,13 +80,13 @@ const removeBlockWordsRequest = () => {
 
 const removeBlockWordsSuccess = (word) => {
     return {
-        type: actionTypes.REMOVE_BLOCKED_WORDS_SUCCESS,
+        type: actionTypes.REMOVE_BLOCK_WORD_SUCCESS,
         word: word
     }
 }
 const removeBlockWordsError = (error) => {
     return {
-        type: actionTypes.REMOVE_BLOCKED_WORDS_ERROR,
+        type: actionTypes.REMOVE_BLOCK_WORD_ERROR,
         error: error
     }
 }

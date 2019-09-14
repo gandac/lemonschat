@@ -3,7 +3,7 @@ import { Router, Route, Switch, Link, NavLink } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory';
 import NotFoundPage from '../components/NotFoundPage';
 import LoginPage from '../components/LoginPage';
-import JoinRoomPage from '../components/JoinRoomPage';
+import AdminRoomPage from '../components/AdminRoomPage';
 import RoomPage from '../components/RoomPage';
 import MainRoom from '../components/MainRoomPage';
 import PrivateRoute from './PrivateRoute';
@@ -17,7 +17,7 @@ const AppRouter = () => (
       <Switch>
         <PublicRoute path="/" component={MainRoom} exact={true} />
         <PublicRoute path="/login" component={LoginPage} />
-        <PrivateRoute path="/admin" component={JoinRoomPage} />
+        <PrivateRoute path="/admin" component={AdminRoomPage} />
         <PrivateRoute path="/room/:id" component={RoomPage} />        
         <Route component={NotFoundPage} />
       </Switch>

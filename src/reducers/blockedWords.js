@@ -9,19 +9,20 @@ const removeProperty = (obj, property) => {
     }, {})
   }
 
-export default (state = {}, action) => {
+export default (state = [], action) => {
     switch (action.type) {
-      case actionTypes.INSERT_BLOCKED_WORDS_SUCCESS:
-            return {
+      case actionTypes.INSERT_BLOCK_WORD_SUCCESS:
+            return [
                 ...state,
-                ...action.blockWord
-            };
+                action.blockWord
+                ]
+
         case actionTypes.GET_BLOCKED_WORDS_SUCCESS:
-            return {
+            return [
                 ...state,
-                ...action.blockWords
-            };
-        case actionTypes.REMOVE_BLOCKED_WORDS_SUCCESS:
+                ...action.blockedWords
+            ]
+        case actionTypes.REMOVE_BLOCK_WORD_SUCCESS:
             // return removeProperty(state,action.word)
             return state.filter(el=> el!==action.word)
         default:

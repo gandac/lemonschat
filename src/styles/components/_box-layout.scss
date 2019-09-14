@@ -12,10 +12,10 @@
   @extend .box-layout;
   height: initial;
   background: linear-gradient(to right, #2c3e50, #3498db);
-  flex-direction: column;
+
   justify-content: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
   position: relative;
   flex-grow: 1;  
@@ -42,12 +42,39 @@
 
 .box-layout__box--join {
   @extend .box-layout__box;
-  margin-bottom: $xl-size;
-  width: 40rem;
+  width: 33%;
   
 }
 
 .box-layout__title {
   margin: 0 0 $m-size 0;
   line-height: 1;
+}
+.listOfBlockedWords{
+  max-width: 100%;
+}
+.wordWithClose{
+  display:inline-block;
+  position:relative;
+  padding:0.3em 0.7em;
+  margin:0.3em;
+  background-color:rgba(0,0,0,0.15);
+  transition:background-color .3s ease;
+  cursor:pointer;
+  .removeWord{
+    opacity:0;
+    visibility:0;
+    position: absolute;
+    right:0.2em;
+    top:0em;
+    font-size:13px;
+    pointer-events: none;
+  }
+  &:hover {
+    background-color:rgba(0,0,0,0.25);
+    .removeWord{
+      opacity:1;
+      visibility: 1;
+    }
+  }
 }
