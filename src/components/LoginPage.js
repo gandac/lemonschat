@@ -17,7 +17,7 @@ class LoginPage extends Component {
     const { startLogin } = this.props;
     return ( 
   <div className="box-layout">
-    <div className="box-layout__box">
+    <div className="box-layout__box boxLogin">
       <h1 className="box-layout__title">Lemonschat admin</h1>
       <p>Enter in the admin area of Lemonchat</p>
       <LoginForm handleSubmit={(event) => this.onFormSubmit(event)}/>

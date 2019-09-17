@@ -1,7 +1,7 @@
 .room-header {
   // position: relative;
   // top: 0;
-  padding: $s-size $l-size;
+  padding: 0.5em;
   width: 100%;
   // max-width: 80vh;
   background: black;
@@ -12,10 +12,32 @@
   justify-content: space-between;
   align-items: center;
   // z-index: 10;
+  @media only screen and (max-width:768px){
+    background:transparent;
+    position: absolute;
+    .buttonBackToAdmin{
+      top:-5.7em;
+      right:0;
+      position:absolute;
+    }
+    .hide-below-960{
+      display: none;
+    }
+  }
 }
 
 .room-header__title {
   font-size: $font-size-large;  
   color: #3498db;
   font-weight: 700;
+}
+
+.mainPageBoxLayout .room-header{
+  background: transparent;
+  /* max-height: 5vh; */
+  height: auto;
+  padding: 1em;
+  text-align: center;
+  align-items: center;
+  display: block;
 }

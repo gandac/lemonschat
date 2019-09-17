@@ -5,6 +5,7 @@
   height: 100vh;
   justify-content: center;
   width: 100vw;
+//  width: calc( (var(--vw, 1vw) * 100 )  );
   display: flex;
 }
 
@@ -20,6 +21,21 @@
   position: relative;
   flex-grow: 1;  
   overflow: hidden;
+  @media only screen and (max-width:768px){
+    height: initial;
+    
+    justify-content: center;
+    display: block;
+    justify-content: space-around;
+    position: relative;
+    flex-grow: 0;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
+
+    height: 66vh;
+    
+    top: 0;
+  }
 }
 
 .box-layout--messages {
@@ -27,8 +43,65 @@
   justify-content: flex-start;
   align-items: flex-start;
   // flex-grow: 0;
+  @media screen  and (max-width:768px){
+    overflow:visible;
+  }
+  &.mainPageBoxLayout{
+    height: 100vh;
+    background: linear-gradient(to bottom right, #0f0f10, #252729);
+    background-image:url('/images/darkness.png');
+    background-repeat: repeat;
+    background-size: initial;
+    .room-header{
+      padding:0.5em!important;
+      margin:0 auto;
+      left:0;
+      top:0;right:0;
+    }
+  }
+}
+.mainPageRoomContainer{
+  max-width: 600px;//imitate mobile center;
+
 }
 
+.mainPageBoxLayout{
+  .room-header{
+    max-width: 600px;
+    margin: 0 auto;
+    padding:0.5em;
+    @media screen and ( max-width: 768px){
+      padding: 0.5em 1em !important;
+    }
+  }
+  .messages-box.mainRoom{
+    max-width: 600px;
+     margin: 0 auto; 
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border:solid 2px #f7b619;
+    border-radius:10px;
+  }
+  #message-form{
+    max-width: 600px;
+    /* display: block; */
+    margin: auto;
+    left: 0;
+    right: 0;
+    border-radius: 10px;
+    border: solid 2px rgba(247, 182, 25, 0.5);
+    .text-input{ 
+      background: transparent;
+      width:100%;
+      border:0;
+      outline:none;
+      font-size:1.5rem;
+      color:#fbfbfb;
+    }
+  }
+}
 
 .box-layout__box {
   background: fade-out(white, .15);
@@ -38,12 +111,28 @@
   width: 25rem;
   // display: inline-block;
   position: relative;
+  &.boxLogin{
+    width:40rem;
+    input{
+      padding: 1em;
+      width: 28rem;
+      margin-bottom: 0.7em;
+      border: 0;
+      outline:#f3a23b;
+    }
+    .submitButton{
+      background-color: #33d1e3;
+      outline: none;
+    }
+  }
 }
 
 .box-layout__box--join {
   @extend .box-layout__box;
   width: 33%;
-  
+  @media screen and (max-width:768px){
+    width:100%;
+  }
 }
 
 .box-layout__title {
@@ -52,6 +141,10 @@
 }
 .listOfBlockedWords{
   max-width: 100%;
+  max-height: 30em;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
+
 }
 .wordWithClose{
   display:inline-block;

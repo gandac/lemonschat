@@ -4,7 +4,7 @@ import authReducer from '../reducers/auth';
 import roomsReducer from '../reducers/rooms';
 import mainRoomReducer from '../reducers/mainRoom';
 import blockedWordsReducer from '../reducers/blockedWords';
-
+import videosReducer from '../reducers/videos';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default () => {
@@ -14,6 +14,7 @@ export default () => {
       rooms: roomsReducer,
       lastRoom: mainRoomReducer,
       blockedWords: blockedWordsReducer,
+      videos: videosReducer,
     }),
     composeEnhancers(applyMiddleware(thunk))
   );

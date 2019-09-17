@@ -13,13 +13,39 @@ export default (state=defaultState, action) => {
           ...action.person
         }
       }
-      case 'UPDATE_USER_MESSAGE_COUNT':
+    case 'UPDATE_USER_MESSAGE_COUNT':
+      return {
+        ...state,
+          user: {
+            ...state.user,
+            totalWords: action.count
+          }
+      }
+    case 'TRIGGER_VIDEO':
+      return {
+        ...state,
+        triggerVideo: [
+          {
+            id : action.code,
+            wasClosed : false,
+          }
+        ]
+      }
+      case 'END_VIDEO':
         return {
           ...state,
-            user: {
-              ...state.user,
-              totalWords: action.count
+          triggerVideo: [
+            {
+              ...state.triggerVideo[0],
+              endVideo: true,
             }
+
+          ]
+        }
+      case 'REMOVE_VIDEO':
+        return {
+          ...state,
+          triggerVideo : [],
         }
     case 'CLEAR_STATE_MAIN_ROOM':
           return [];

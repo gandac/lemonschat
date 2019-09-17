@@ -5,7 +5,7 @@ const loginForm = (props) => {
     <form onSubmit={props.handleSubmit}>
         <input name="email" type="email" placeholder="Email" />
         <input name="password" type="password" placeholder="Password"  />
-        <input type="submit"  value="Enter"/>
+        <input type="submit"  className="submitButton" value="Enter"/>
     </form>);
 }
 export default loginForm;

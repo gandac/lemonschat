@@ -1,10 +1,13 @@
 .button {
   background: $blue;
   border: none;
+  border-radius: 10px;
   color: white;
   display: inline-block;
-  font-size: $font-size-large;
-  font-weight: 300;
+  font-size: 1.6rem;
+  font-weight: 100;
+  font-family: "Roboto";
+  font-style: italic;
   line-height: 1;
   padding: $s-size;
   text-decoration: none;
@@ -14,7 +17,12 @@
   @extend .button;
   background: $github-color;
 }
-
+#message-form button.sendMessageButton{
+  flex-grow: unset;
+  padding:1.3rem;
+  color: #f0f0f0;
+  outline: none;
+}
 .button--leave-room {
   @extend .button;
   background: none;
@@ -30,7 +38,7 @@
 
 .button--join {
   @extend .button;
-  background: #2ecc71;
+  background: #33d1e3;
   margin-left: $s-size;
 }
 

@@ -11,6 +11,6 @@ app.get('*', (req, res) => {
   res.set("Connection", "close");
 });
 
-module.exports.server = app.listen(port);
+module.exports.server = app.listen(port,'0.0.0.0');
 
 

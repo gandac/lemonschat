@@ -25,13 +25,13 @@ export const getBlockWords = () => {
     return (dispatch,getState) => {
         dispatch(getBlockWordsRequest());
         const dbRef =  database.ref(`blockedWords`);
-        dbRef.once('value').then((snapshot)=>{
+        return dbRef.once('value').then((snapshot)=>{
             const blockedWords = []
             snapshot.forEach((childSnapshot) => {
-
                 blockedWords.push(childSnapshot.val());
             });
             dispatch(getBlockWordsSuccess(blockedWords));
+            return blockedWords;
         }).catch(error => {
             dispatch(getBlockWordsError(error));
         });

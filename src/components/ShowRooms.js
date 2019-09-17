@@ -24,7 +24,9 @@ class ShowRooms extends React.Component {
     if(rooms.length > 0){
       const a = rooms.map((room,index) => {
         // console.log(room);
-        return <div key={index} className="room-name-wrapper wrapperssss"><button className="button--unread-messages" onClick={() => this.props.startClearUnread(room.name) }>{this.showUnread(room)}</button><NavLink  to={`/room/${room.name}`} activeClassName="room-selected"><div className='room-name'>{room.name}</div></NavLink></div>;
+        return <div key={index} className="room-name-wrapper wrapperssss">
+          <button className="button--unread-messages"  onClick={() => this.props.startClearUnread(room.name) }>{room.messages.length}</button>
+          <NavLink  to={`/room/${room.name}`} activeClassName="room-selected"> <div className='room-name'>{room.name}</div></NavLink></div>;
       });
       return a;
     }

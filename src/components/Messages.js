@@ -3,6 +3,23 @@ import { connect } from 'react-redux';
 import selectMessages from '../selectors/messages';
 import moment from 'moment';
 
+export const MessageItem = ( props ) => {
+  const {name , text, time, words , id , isObfuscated} = props;
+  return (
+        <li key={id} className={`message ${isObfuscated  === true ? 'isObfuscated' : ''}`}>
+          <div className="messageHeader">
+          <span className="messageName"> {name} </span>
+          <span className="messageMeta"> 
+          {words} 
+          <span style={{"float":"right"}}>{time} </span>
+          </span>
+          </div>
+          <div className="messageText">{text}</div>
+          {isObfuscated === true ? <div className="censoredLabel">{name} a fost cenzurat</div> : ''}
+        </li>
+  )
+}
+
 class Messages extends React.Component {
 
 
@@ -25,21 +42,24 @@ class Messages extends React.Component {
     let a = [],  prevSender;
     // console.log(messages);
     messages.forEach((message) => {
-      const name = <p className="message__name">{message.sender.anonimNumber ? message.sender.anonimNumber : message.sender.displayName }</p>;
-      const time = <p className="message__time">{moment(message.createdAt).format('h:mm:ss a, MMMM Do YYYY, dddd')} - words remaining: {message.sender.totalWords}</p>;
+      const name = message.sender.anonimNumber ? message.sender.anonimNumber : message.sender.displayName;
+      const time = moment(message.createdAt).format('H:mm');
+      const words = <span> words remaining: {message.sender.totalWords}</span>
       const text = <p className="message__text">{message.text}</p>;
       // console.log(prevSender, messages[key].sender.displayName)
       if(message.status) {
-        a.push(<li key={message.id} className="message-with-status">{text}{time}</li>);
+        a.push(<MessageItem name={name + ' joined'} time={time} words={words} id={message.id} isObfuscated={message.isObfuscated}/>);
         prevSender = null;
+      }else if( !message.sender.isAnonymous ) {
+        // a.push(<li key={message.id} className="message">{time}{text}</li>);//no name
+        a.push(<MessageItem  time={time} text={text} id={message.id} isObfuscated={message.isObfuscated}/>);
+      }else if(prevSender === message.sender.uid) {
+        a.push(<MessageItem name={name} time={time} words={words} text={text} id={message.id} isObfuscated={message.isObfuscated}/>);
       }
-
-       else if(prevSender === message.sender.uid) {
-        a.push(<li key={message.id} className="message">{time}{text}</li>);
-      }
+      
       else {
         prevSender = message.sender.uid;
-        a.push(<li key={message.id} className="message">{name}{time}{text}</li>);
+        a.push(<MessageItem name={name} time={time} words={words} text={text} id={message.id} isObfuscated={message.isObfuscated}/>);
       }
     }); 
     // a.push(<li key="" tabIndex="1"></li>);
@@ -47,8 +67,11 @@ class Messages extends React.Component {
   }
 
   render() {
+    let className = "messages-box";
+     if( this.props.mainRoom )
+        className = "messages-box mainRoom"
     return (
-      <div className="messages-box">
+      <div className={className}>
         <ul>
         {
           this.displayMessages(this.props.messages)

@@ -4,15 +4,24 @@
 
 html {
   font-size: 62.5%;
+
 }
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i&display=swap&subset=latin-ext');
 
 body {
   color: $dark-grey;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Roboto",Helvetica, Arial, sans-serif;
   font-size: $m-size;
+  font-weight: 100;
   line-height: 1.6;
   overflow: hidden;  
+  background:#000;
 }
+html{
+  background: #000;
+}
+
+
 
 button {
   cursor: pointer;
@@ -25,3 +34,5 @@ button:disabled {
 .is-active {
   font-weight: bold;
 }
+
+

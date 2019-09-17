@@ -89,6 +89,8 @@ module.exports = (env) => {
       contentBase: path.join(__dirname, 'public'),
       historyApiFallback: true,
       publicPath: '/dist/',
+    //  host: '192.168.0.44',//your ip address
+      disableHostCheck: true, 
       port: 4172
     }
   };

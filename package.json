@@ -14,7 +14,7 @@
     "heroku-postbuild": "yarn run build:prod",
     "electron": "electron .",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/images/favicon3.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=public/images/favicon3.ico --prune=true --out=release-builds",    
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=public/images/favicon3.ico --prune=true --out=release-builds",
     "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=public/images/favicon3.png --prune=true --out=release-builds"
   },
   "dependencies": {
@@ -44,6 +44,7 @@
     "react-modal": "2.2.2",
     "react-redux": "5.0.5",
     "react-router-dom": "4.1.2",
+    "react-youtube": "^7.9.0",
     "redux": "3.7.2",
     "redux-thunk": "2.2.0",
     "sass-loader": "6.0.6",

@@ -74,11 +74,11 @@ export class RoomPage extends React.Component {
     return (
       <div className="box-layout--messages">
         <div className="room-header">
-        <Link to="/admin" className="button--leave-room" >Back to admin</Link>
+        <Link to="/admin" className="button--leave-room buttonBackToAdmin" >Back to admin</Link>
           
-          <div className="room-header__title">{this.props.location.pathname.split('/').slice(-1)[0]}</div>
-          <button onClick={this.handleLeaveRoom} className="button--leave-room" style={{"display":"none"}}>Leave room</button>
-          <button onClick={this.showPeople} className="button--leave-room">View People</button>
+          <div className="room-header__title hide-below-960">{this.props.location.pathname.split('/').slice(-1)[0]}</div>
+          <button onClick={this.handleLeaveRoom} className="button--leave-room hide-below-960" style={{"display":"none"}}>Leave room</button>
+          <button onClick={this.showPeople} className="button--leave-room hide-below-960">View People</button>
         </div>
         <Messages roomName={this.roomName} />
         <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">

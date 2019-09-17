@@ -2,6 +2,14 @@
   display: flex;
   flex-direction: row;
   height: 100%;
+  @media screen and (max-width:768px) {
+    display: block;
+  }
+  &.mainPageWrapper{
+    display: flex!important;
+    flex-direction: row;
+    height: 100%;
+  }
 }
 
 .container__left {
@@ -10,8 +18,21 @@
   background: linear-gradient(to right, $github-color,#2c3e50);
   border-right: 1px solid fade-out(white, .8);;
   padding: 0 0 $l-size $l-size;
+
   float: left;  
   // position: relative;
+
+  @media only screen and (max-width: 768px){
+    height: auto;
+    width: 100%;
+    max-height: 10em;
+    height: 10em;
+    float: none;
+    padding: 0;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
+
+  }
 }
 
 .container__left__text {
@@ -51,4 +72,3 @@
     padding: $m-size $l-size;
   }
 }
-

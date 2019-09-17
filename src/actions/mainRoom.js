@@ -2,10 +2,12 @@ import database, { firebase } from '../firebase/firebase';
 import { history } from '../routers/AppRouter';
 import {createRoom} from './rooms.js';
 import moment from 'moment';
+import {getBlockWords} from './blockedWords';
 import * as path from 'path';
 // import { ipcRenderer } from 'electron';
 
-
+export const MESSAGE_CODE_VIDEO_1 = 'ladmincode1t';
+export const MESSAGE_CODE_VIDEO_2 = 'ladmincode2t';
 
 export const clearUnread = (roomName, uid, time, unread) => ({
   type: 'CLEAR_UNREAD',
@@ -14,6 +16,19 @@ export const clearUnread = (roomName, uid, time, unread) => ({
   time,
   unread
 });
+
+export const setEndVideo = () => {
+  return {
+    type: 'END_VIDEO',
+  }
+}
+
+export const removeVideo = () => {
+  return {
+    type: 'REMOVE_VIDEO',
+  }
+}
+
 export const saveUserInfo = (person) => ({
   type: 'SAVE_USER_INFO',
   person
@@ -33,12 +48,27 @@ export const updatePersonTotalWords = ( roomName , uid , totalWords) => {
   }
 }
 
+export const triggerVideo = (code) => {
+  return {
+    type : 'TRIGGER_VIDEO',
+    code : code,
+  }
+}
+
 export const startListening = (roomName) => {
   return (dispatch, getState) => {
+    const state = getState();
     return database.ref(`rooms/${roomName}/messages`).on('child_added', (msgSnapshot) => {
       if (getState().rooms.find((r) => r.name === roomName)) {
         database.ref(`rooms/${roomName}/people`).once('value', (personSnapshot) => {            
           const message = msgSnapshot.val();
+          if([ MESSAGE_CODE_VIDEO_1 , MESSAGE_CODE_VIDEO_2 ].includes(message.text.trim().toLowerCase() ) ){
+           // alert('Trigger Video');
+            dispatch(triggerVideo(message.text.trim().toLowerCase()));
+          }
+          let messageHandled = obfuscateWords(message.text , state.blockedWords )
+          message.text = messageHandled.text;
+          message.isObfuscated = messageHandled.isObfuscated;
           dispatch(sendMessage({ ...message, id: msgSnapshot.key }, roomName));
           dispatch(orderRoomsStartState()) ;
           if(message.sender.displayName!==getState().auth.displayName) {
@@ -96,16 +126,51 @@ export const  getLastAddedRoom = () => {
     })
 
     const lastRoom = rooms[rooms.length - 1];
-
     return dispatch(saveLastRoom(lastRoom));
-     
   }
 }
+
 export const updateCurrentUserWordCount = (count) => {
   return {
     type : "UPDATE_USER_MESSAGE_COUNT",
     count:count,
   }
+}
+
+export const hashWord = (word) => {
+  if(word.length == 1){
+     return word.replace(/./g, '*');
+  }else if(word.length == 2){
+    return word.replace(/.\b/g, '*');
+  }else{
+    const censored = word[0] + word.slice(1).replace(/.(?!$)/g, '*') 
+    return censored;
+    // return word.replace(/(?<!^).(?!$)/g, '*');  
+  }
+  return word;
+}
+
+export const obfuscateWords = (message,blockedWords) => {
+  const messageArray = message.split(/[ .,?!]+/);
+  if( Array.isArray(blockedWords) && Array.isArray(messageArray)  ){
+    if(messageArray.length > 0 && blockedWords.length > 0){
+
+      let messageReturned = '';
+      let messageHashed = false;
+      messageArray.forEach(word => {
+        if ( blockedWords.includes(word) ) { 
+          messageReturned += hashWord(word) + ' ';
+          messageHashed = true;
+        }else{
+          messageReturned += word + ' ';
+        }
+      });
+      if(messageHashed){
+        return {text: messageReturned , isObfuscated: true};
+      }
+    }
+  }
+  return {text:message , isObfuscated: false};
 }
 //Method that checks if the user is already in the channel, subscribe the user to the channel, subscribe react app to firebase
 export const joinLastCreatedRoom = (user) => {
@@ -114,8 +179,12 @@ export const joinLastCreatedRoom = (user) => {
     const state = getState();
     const lastRoomWait = await dispatch(getLastAddedRoom());
     const lastRoom = lastRoomWait.lastRoom;
+    const blockedWordsWait = await dispatch(getBlockWords());
+    const blockedWords = blockedWordsWait;
+   // console.log('blockkkkkkkkk',blockedWords);
     // react subscribe to the channel as soon as we have the last room
     dispatch(startListening(lastRoom.name));
+
     //query
     const dbRef = database.ref(`rooms/${lastRoom.name}`);
     const snapshot = await dbRef.once('value');
@@ -144,14 +213,15 @@ export const joinLastCreatedRoom = (user) => {
           });
         }
         for (var key in value.messages) {
+          let messageHandled = obfuscateWords(value.messages[key].text , blockedWords)
+          value.messages[key].text = messageHandled.text;
+          value.messages[key].isObfuscated = messageHandled.isObfuscated,
           messages.push({
             ...value.messages[key]
           });
-        
+
         }
-        console.log('value', value);
-        console.log('lastRoom', lastRoom);
-        console.log('theUser', user);
+
         dispatch(createRoom({
           people: [...people,person],
           name: lastRoom.name,
@@ -184,11 +254,13 @@ export const countWords = (s) =>{
   return s.split(/[ .,?!]+/).filter(function(str){return str!="";}).length;
   //return s.split(' ').filter(String).length; - this can also be used
 }
-export const sendMessage = (message, roomName) => ({
-  type: 'SEND_MESSAGE',
-  message,
-  roomName
-});
+export const sendMessage = (message, roomName) => {
+  return {
+    type: 'SEND_MESSAGE',
+    message,
+    roomName
+  }
+}
 
 export const startSendMessage = (text, roomName, status = false) => {
   return (dispatch, getState) => {
@@ -208,7 +280,7 @@ export const startSendMessage = (text, roomName, status = false) => {
           totalWords = user.totalWords;
         }
         const anonimNumber = user.anonimNumber;
-        
+        if(totalWords >= 0){
         console.log('log sending message from the main room' , user)
         const message = {
           sender: { uid, displayName , isAnonymous , totalWords , anonimNumber },
@@ -218,6 +290,10 @@ export const startSendMessage = (text, roomName, status = false) => {
         };
         dispatch(updateCurrentUserWordCount(totalWords));
         return database.ref(`rooms/${roomName}/messages`).push(message);
+        }else{
+          //this is the second protection. The words should be blocked in the UI first. If is any problem there will catch here and not save more 140 words in db.
+          console.log('User submitted more than 140 words');
+        }
       }else{
         console.log('user Not found in Room');
       }

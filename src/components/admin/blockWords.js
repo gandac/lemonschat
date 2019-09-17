@@ -1,8 +1,8 @@
 import React from 'react'
 
 const Word = (props) => {
-    return <div className="wordWithClose">
-            <div className="wordLabel" onClick={(e) => props.wordRemove(e , props.word)}>{props.word}</div>
+    return <div className="wordWithClose" onClick={(e) => props.wordRemove(e , props.word)}>
+            <div className="wordLabel" >{props.word}</div>
             <a className="removeWord" >x</a>
          </div>
 }

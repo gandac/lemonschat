@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { joinLastCreatedRoom , startSendMessage} from '../actions/mainRoom';
+import { joinLastCreatedRoom , startSendMessage,setEndVideo , removeVideo , countWords}  from '../actions/mainRoom';
+import {getVideos} from '../actions/videos';
 //import { startSendMessage} from '../actions/rooms';
 import Messages from './Messages';
-import PeopleModal from './PeopleModal';
+import VideoModal from '../ui/VideoModal';
+import { removeBlockWords } from '../actions/blockedWords';
 
 // const getMessages = () => {
 
@@ -26,6 +28,7 @@ componentDidMount(){
 
     //store.dispatch(login(user.uid, name));
     const user = this.props.auth;
+    this.props.getVideos();
 
 }
 
@@ -63,19 +66,73 @@ componentDidMount(){
       
     }
   }
+  onEndVideo(e){
 
+    this.props.setEndVideo();
+  }
+  onCloseVideo (e) {
+    e.preventDefault();
+    this.props.removeVideo();
+  }
+  
+  messageChanged(e){
+      
+      const {roomUser} = this.props;
+      const inputValue = e.target.value;
+      const currentWordsCount = countWords(inputValue);
+
+      let remainingWords = 140;
+      if( roomUser ) {
+         remainingWords = roomUser.totalWords - currentWordsCount;
+      }
+ 
+      if(remainingWords <= 0){
+          e.target.value = inputValue.slice(0, -1)
+      }else{
+          //do nothing . Here we can trigger a field that user is typing if val.length > 0
+      }
+  }
   render() {
+    
+    const {triggerVideo,roomUser} = this.props;
+    let hasVideos = false;
+    let videoToView = false;
+
+    if(triggerVideo && triggerVideo[0] ){
+        if(triggerVideo[0].wasClosed === false){
+            videoToView = triggerVideo[0].id;
+            hasVideos = true;
+        }
+    }
+    let remainingWords = 140;
+   
+
     return (
-      <div className="box-layout--messages">
-        <div className="room-header">
-          <div className="room-header__title">{this.props.lastRoom.name}</div>
+    <div className='container mainPageWrapper'>
+        
+        <div className="box-layout--messages mainPageBoxLayout">
+        
+                <div className="room-header">
+                    <img className="logoImage" src="/images/logo.png" />
+                </div>
+                <Messages roomName={this.props.lastRoom.name} mainRoom />
+                <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
+                    <input type="text" name="message" className="text-input" placeholder="Send message" autoFocus onChange={(e)=>this.messageChanged(e)} />
+                    <button name="submit" className="login-button sendMessageButton" >Send</button>
+                </form>
+                
+                {hasVideos ? 
+                    <VideoModal
+                    canClose =  {triggerVideo[0].endVideo}
+                    onEndVideo={() => this.onEndVideo()}
+                    code={videoToView} 
+                    videos={this.props.videos}
+                    onCloseVideo={(e) => this.onCloseVideo(e)}/>
+                    : ''
+                } 
+         
         </div>
-        <Messages roomName={this.props.lastRoom.name} />
-        <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
-          <input type="text" name="message" className="text-input" placeholder="Send message" autoFocus />
-          <button name="submit" className="login-button">Send</button>
-        </form>
-      </div>
+    </div>
     );
   }
 }
@@ -83,11 +140,17 @@ componentDidMount(){
 const mapStateToProps = (state) => ({
   auth: state.auth,
   rooms: state.rooms,
-  lastRoom: state.lastRoom
+  lastRoom: state.lastRoom,
+  roomUser: state.lastRoom.user,
+  triggerVideo: state.lastRoom.triggerVideo,
+  videos: state.videos,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   startSendMessage: (message, roomName) => dispatch(startSendMessage(message, roomName)),
+  setEndVideo: () => dispatch(setEndVideo()),
+  removeVideo : () => dispatch(removeVideo()),
+  getVideos: () => dispatch(getVideos()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomPage);
