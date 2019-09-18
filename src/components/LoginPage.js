@@ -23,7 +23,7 @@ class LoginPage extends Component {
       <LoginForm handleSubmit={(event) => this.onFormSubmit(event)}/>
       <p>OR </p>
 
-      <button className="login-button" onClick={startLogin}>Login with Github</button>
+      <button className="login-button" onClick={startLogin} style={{'display' : 'none'}}>Login with Github</button>
     </div>
   </div>
     )

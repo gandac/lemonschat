@@ -31,7 +31,10 @@
     padding: 0;
     overflow: scroll;
     -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
-
+    
+  }
+  @media only screen and (max-height:470px){
+    display: none; 
   }
 }
 

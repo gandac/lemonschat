@@ -33,8 +33,10 @@
     -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
 
     height: 66vh;
-    
-    top: 0;
+    top: 0; 
+  }
+  @media only screen and (max-height:470px){
+    height:80vh;
   }
 }
 
