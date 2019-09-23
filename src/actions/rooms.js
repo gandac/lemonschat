@@ -169,7 +169,7 @@ export const startJoinRoom = (data = {}, showJoinError) => {
           }));
           const perName = person.name;
 
-          dispatch(startSendMessage(`${perName} joined`, data.roomName, true));
+          dispatch(startSendMessage(`Lemonschat joined`, data.roomName, true));
 
           history.push(`room/${data.roomName}`);
         });

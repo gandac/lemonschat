@@ -112,14 +112,16 @@ export class AdminRoomPage extends React.Component {
 
   onJoinRoom = (e) => {
     e.preventDefault();
-    const user = this.props.auth;
-    const data = {
-      roomName: e.target.rname.value,
-      id: user.uid,
-      name: user.displayName,
-      unread: 0
+    if(e.target.rname.value.length > 0 ){
+      const user = this.props.auth;
+      const data = {
+        roomName: e.target.rname.value,
+        id: user.uid,
+        name: user.displayName,
+        unread: 0
+      }
+      this.props.startJoinRoom(data, this.showJoinError);
     }
-    this.props.startJoinRoom(data, this.showJoinError);
   }
 
   render() {

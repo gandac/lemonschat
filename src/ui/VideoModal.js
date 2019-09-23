@@ -6,16 +6,18 @@ export default class VideoModal extends Component{
    
     componentDidMount(){
         console.log('mooouooooooont');
-    
+        this.props.inputRef.blur();
     }
     _onReady(event) {
         // access to player in all event handlers via event.target
         event.target.playVideo();
-        const iframe = event.target;
-        var requestFullScreen = iframe.requestFullScreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullScreen;
-        if (requestFullScreen) {
-          requestFullScreen.bind(event.target)();
-        }
+        //event.target.focus();
+        this.videoRef.focus();
+        // const iframe = event.target;
+        // var requestFullScreen = iframe.requestFullScreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullScreen;
+        // if (requestFullScreen) {
+        //   requestFullScreen.bind(event.target)();
+        // }
       }
       _onEnd(event){
           console.log('event captured in videomodal');
@@ -33,7 +35,7 @@ export default class VideoModal extends Component{
             width: '390',
             playerVars: { // https://developers.google.com/youtube/player_parameters
               autoplay: 1,
-              playsinline: 0,
+              playsinline: 1,
               related:0,
               rel:0,
               showInfo:0,
@@ -44,6 +46,7 @@ export default class VideoModal extends Component{
                 <YouTube
                     videoId={videoId}
                     opts={opts}
+                    ref={(ref)=>this.videoRef = ref}
                     onReady={(event)=>this._onReady(event)}
                     onEnd={(event)=>this._onEnd(event)}
                 />

@@ -42,7 +42,7 @@ class Messages extends React.Component {
     let a = [],  prevSender;
     // console.log(messages);
     messages.forEach((message) => {
-      const name = message.sender.anonimNumber ? message.sender.anonimNumber : message.sender.displayName;
+      const name = message.sender.anonimNumber ? message.sender.anonimNumber : 'Lemonschat';
       const time = moment(message.createdAt).format('H:mm');
       const words = <span> words remaining: {message.sender.totalWords}</span>
       const text = <p className="message__text">{message.text}</p>;

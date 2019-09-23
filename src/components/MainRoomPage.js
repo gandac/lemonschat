@@ -76,7 +76,9 @@ componentDidMount(){
   }
   
   messageChanged(e){
-      
+      console.log('reffff on  change' , this.sendMessageInputRef.value);
+      //this.sendMessageInputRef.blur();
+      //this.refs.sendMessageInputRef.blur();
       const {roomUser} = this.props;
       const inputValue = e.target.value;
       const currentWordsCount = countWords(inputValue);
@@ -92,16 +94,23 @@ componentDidMount(){
           //do nothing . Here we can trigger a field that user is typing if val.length > 0
       }
   }
+  triggerVideoFront(){
+    console.log('reffff value',this.sendMessageInputRef.value);
+   // this.sendMessageInputRef.blur();
+  }
   render() {
     
     const {triggerVideo,roomUser} = this.props;
     let hasVideos = false;
     let videoToView = false;
-
+  
     if(triggerVideo && triggerVideo[0] ){
+
         if(triggerVideo[0].wasClosed === false){
             videoToView = triggerVideo[0].id;
             hasVideos = true;
+            
+            this.triggerVideoFront();
         }
     }
     let remainingWords = 140;
@@ -117,16 +126,18 @@ componentDidMount(){
                 </div>
                 <Messages roomName={this.props.lastRoom.name} mainRoom />
                 <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
-                    <input type="text" name="message" className="text-input" placeholder="Send message" autoFocus onChange={(e)=>this.messageChanged(e)} />
+                    <input type="text"  ref={(ref) => {this.sendMessageInputRef = ref}} name="message" className="text-input" placeholder="Send message" autoFocus onChange={(e)=>this.messageChanged(e)} />
                     <button name="submit" className="login-button sendMessageButton" >Send</button>
                 </form>
                 
                 {hasVideos ? 
+                
                     <VideoModal
                     canClose =  {triggerVideo[0].endVideo}
                     onEndVideo={() => this.onEndVideo()}
                     code={videoToView} 
                     videos={this.props.videos}
+                    inputRef = {this.sendMessageInputRef}
                     onCloseVideo={(e) => this.onCloseVideo(e)}/>
                     : ''
                 } 
