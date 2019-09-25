@@ -76,14 +76,12 @@ componentDidMount(){
   }
   
   messageChanged(e){
-      console.log('reffff on  change' , this.sendMessageInputRef.value);
-      //this.sendMessageInputRef.blur();
-      //this.refs.sendMessageInputRef.blur();
+
       const {roomUser} = this.props;
       const inputValue = e.target.value;
       const currentWordsCount = countWords(inputValue);
-
       let remainingWords = 140;
+
       if( roomUser ) {
          remainingWords = roomUser.totalWords - currentWordsCount;
       }
@@ -95,8 +93,7 @@ componentDidMount(){
       }
   }
   triggerVideoFront(){
-    console.log('reffff value',this.sendMessageInputRef.value);
-   // this.sendMessageInputRef.blur();
+    console.log('Video Triggered on device!',this.sendMessageInputRef.value);
   }
   render() {
     

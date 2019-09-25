@@ -7,11 +7,10 @@ import ListBlockWords from './admin/blockWords';
 
 const Videos = (props) => { 
   const {video1,video2} = props.videos;
-  console.log('video 1 rendeeeeeeeereeeed',video1);
   return (<div>
     <hr />
     <p>Video1: Use code <code> ladmincode1t </code> in room<br/>
-    https://youtube.com/?v=
+    https://youtube.com/watch?v=
     <input 
     className="text-input--join" 
     placeholder="2g811Eo7K8U"
@@ -25,7 +24,7 @@ const Videos = (props) => {
     <hr />
     <p>Video2: Use code <code> ladmincode2t </code> in room</p>
     <p>
-    https://youtube.com/?v=<input className="text-input--join" placeholder="2g811Eo7K8U" name="video2" style={{maxWidth:'8em'}}  value={video2.id} onChange={(event)=>props.handleVideoInputChange(event)} />
+    https://youtube.com/watch?v=<input className="text-input--join" placeholder="2g811Eo7K8U" name="video2" style={{maxWidth:'8em'}}  value={video2.id} onChange={(event)=>props.handleVideoInputChange(event)} />
     {video2.hasChanged ? <button className="button--join" onClick = {(e)=>props.onVideoSave(e)} name='video2'>Save</button> : '' } 
     </p>
     <hr />
@@ -90,12 +89,10 @@ export class AdminRoomPage extends React.Component {
   }
   handleVideoInputChange(event){
     event.preventDefault();
-    console.log('handleINputChange',event.target.name , event.target.value);
     this.props.changeVideo(event.target.name , event.target.value);
   }
   onVideoSave(event){
     event.preventDefault();
-    //console.log(event.target.name);
     this.props.insertVideo(event.target.name);
   }
   showCreateError = (error) => {
@@ -125,7 +122,6 @@ export class AdminRoomPage extends React.Component {
   }
 
   render() {
-    const blockedWords = this.props.blockedWords;
     return (
       <div className="box-layout--join">
         <div className="box-layout__box--join">

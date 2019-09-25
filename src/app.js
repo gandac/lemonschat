@@ -52,7 +52,7 @@ firebase.auth().onAuthStateChanged((user) => {
       history.push('/admin');
     }
 
-    console.log('User Authenthicated! Guest?' ,user.isAnonymous );
+    console.log('User Authenthicated! Is it guest?' ,user.isAnonymous );
 
   } else {
 

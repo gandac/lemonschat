@@ -5,14 +5,15 @@ import {MESSAGE_CODE_VIDEO_1,MESSAGE_CODE_VIDEO_2} from '../actions/mainRoom';
 export default class VideoModal extends Component{
    
     componentDidMount(){
-        console.log('mooouooooooont');
         this.props.inputRef.blur();
     }
     _onReady(event) {
         // access to player in all event handlers via event.target
         event.target.playVideo();
-        //event.target.focus();
         this.videoRef.focus();
+
+        // Experimental . Request the video fullscreen for desktop , and android experimental. On Iphone may cause conflicts. 
+
         // const iframe = event.target;
         // var requestFullScreen = iframe.requestFullScreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullScreen;
         // if (requestFullScreen) {
@@ -20,7 +21,6 @@ export default class VideoModal extends Component{
         // }
       }
       _onEnd(event){
-          console.log('event captured in videomodal');
         this.props.onEndVideo(event);
       }
 
@@ -50,7 +50,7 @@ export default class VideoModal extends Component{
                     onReady={(event)=>this._onReady(event)}
                     onEnd={(event)=>this._onEnd(event)}
                 />
-                {this.props.canClose ? <a className="button--join" onClick={(e) => this.props.onCloseVideo(e)}>Close Video</a> : ''}
+                {this.props.canClose ? <a className="button--join closeVideoBut" onClick={(e) => this.props.onCloseVideo(e)}>Close Video</a> : ''}
             </div>
     }
 }

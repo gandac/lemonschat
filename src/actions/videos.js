@@ -9,7 +9,6 @@ const getVideosRequest = () => {
 }
 
 const getVideosSuccess= (videos) => {
-    console.log('videooooos',videos);
     return {
         type: actionTypes.GET_VIDEOS_SUCCESS,
         videos: videos
@@ -38,7 +37,7 @@ export const getVideos = () => {
             dispatch(getVideosSuccess(returnVideos));
             return videos;
         }).catch(error => {
-            console.log('errrrrrrrrrrrrr',error);
+            console.log('Video Loading error:',error);
             dispatch(getVideosError(error));
         });
     }
@@ -72,7 +71,7 @@ export const insertVideo = (name) => {
         const dbRef =  database.ref(`videos/${name}`).set(saveId).then((snapshot)=>{
             dispatch(insertVideoSuccess(name));
         }).catch(error => {
-            console.log('errrrrrrrrrorrrrrrrrrrrr', error);
+            console.log('Video Saving Error', error);
             dispatch(insertVideoError(error));
         });
     }

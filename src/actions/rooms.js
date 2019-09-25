@@ -63,7 +63,6 @@ export const startListening = (roomName) => {
       if (getState().rooms.find((r) => r.name === roomName)) {
         database.ref(`rooms/${roomName}/people`).once('value', (personSnapshot) => {            
           const message = msgSnapshot.val();
-          console.log('messss',message);
           dispatch(sendMessage({ ...message, id: msgSnapshot.key }, roomName));
           dispatch(orderRoomsStartState());
           if(message.sender.displayName!==getState().auth.displayName) {
@@ -117,7 +116,6 @@ export const  getLastAddedRoom = () => {
           return a.date-b.date
         })
         const lastRoom = rooms[rooms.length - 1];
-        console.log('lastRoom' , lastRoom);
         return dispatch(saveLastRoom(lastRoom));
     });
   }
@@ -132,7 +130,7 @@ export const startJoinRoom = (data = {}, showJoinError) => {
         return showJoinError('Room not found!');
       }
       else if (value.people && value.people[id]) {
-        console.log('is doingg nothing');
+        console.log('PUSHED ADMIN USER TO /room/roomName');
         history.push(`room/${data.roomName}`);
       }
       else {
@@ -165,6 +163,7 @@ export const startJoinRoom = (data = {}, showJoinError) => {
           dispatch(createRoom({
             people: [...people, person],
             name: data.roomName,
+            date: data.date,
             messages
           }));
           const perName = person.name;
@@ -207,21 +206,16 @@ export const orderRoomsStartState = () => ({
 
 export const setStartState = () => {
   return async (dispatch, getState) => {
-    // console.log('setting start state');
     const uid = getState().auth.uid;
     if (uid) {
-      // console.log('user found');
        const roomsRef = database.ref(`users/${uid}`);
        const roomsSnapshot = await roomsRef.once('value');
        const rooms = roomsSnapshot.val().rooms;
-        console.log('the roooms' , rooms);
         for (var key in rooms) {
-            console.log(key);
             dispatch(startListening(key));
             const createRef = database.ref(`rooms/${key}`);
             const snapshot = await createRef.once('value');
             const room = snapshot.val();
-              console.log('heeeeereeee', room);
               if(room){
                 const { name, people, messages } = room;
                 let peopleArray = [], messagesArray = [];
@@ -231,17 +225,17 @@ export const setStartState = () => {
                 for (var messagesKey in messages) {
                   messagesArray.push({ ...messages[messagesKey], id: messagesKey });
                 }
-                console.log('creating room');
+                console.log('Admin is creating room');
                 dispatch(createRoom({
                   name,
                   people: peopleArray,
+                  date: room.date,
                   messages: messagesArray
                 }));
              }
             }
           
         }
-          // console.log('hello')
           dispatch(orderRoomsStartState());
         }
   

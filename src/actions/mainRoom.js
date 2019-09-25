@@ -86,7 +86,6 @@ export const startListening = (roomName) => {
           const personID = getState().auth.uid;
 
           if (personID === message.sender.uid ) {
-            console.log('comparingIDS',message.sender.uid , personID , message);
             database.ref(`rooms/${roomName}/people/${personID}`).update({ unread: 0, lastRead: message.createdAt ,totalWords: message.sender.totalWords }).then(() => {
               dispatch(setUnread(roomName, personID, message.createdAt, 0));
               dispatch(updatePersonTotalWords(roomName,personID,message.sender.totalWords));
@@ -181,7 +180,6 @@ export const joinLastCreatedRoom = (user) => {
     const lastRoom = lastRoomWait.lastRoom;
     const blockedWordsWait = await dispatch(getBlockWords());
     const blockedWords = blockedWordsWait;
-   // console.log('blockkkkkkkkk',blockedWords);
     // react subscribe to the channel as soon as we have the last room
     dispatch(startListening(lastRoom.name));
 
@@ -217,7 +215,8 @@ export const joinLastCreatedRoom = (user) => {
           value.messages[key].text = messageHandled.text;
           value.messages[key].isObfuscated = messageHandled.isObfuscated,
           messages.push({
-            ...value.messages[key]
+            ...value.messages[key],
+            id: key
           });
 
         }
@@ -225,6 +224,7 @@ export const joinLastCreatedRoom = (user) => {
         dispatch(createRoom({
           people: [...people,person],
           name: lastRoom.name,
+          date: lastRoom.date,
           messages
         }));
         let storePerson = person;
@@ -239,8 +239,7 @@ export const joinLastCreatedRoom = (user) => {
           dispatch(startSendMessage(`${person.anonimNumber} joined`, lastRoom.name, true)); 
         }else{
           // user is already in db get current user in the current room
-          console.log('value.people' , value.people)
-             storePerson = value.people[user.uid];
+          storePerson = value.people[user.uid];
         }
         dispatch(saveUserInfo(storePerson));
       }
@@ -267,8 +266,7 @@ export const startSendMessage = (text, roomName, status = false) => {
     const authUser = getState().auth;
 
     if( authUser){
-      console.log('message sent started!' , authUser);
-      console.log('compare this mpther',getState().rooms[0].people.filter( el =>  el.id == authUser.uid ));
+
       let user = getState().rooms[0].people.filter( el =>  el.id == authUser.uid )[0];
       
       if (user) {
@@ -281,21 +279,21 @@ export const startSendMessage = (text, roomName, status = false) => {
         }
         const anonimNumber = user.anonimNumber;
         if(totalWords >= 0){
-        console.log('log sending message from the main room' , user)
+        
         const message = {
           sender: { uid, displayName , isAnonymous , totalWords , anonimNumber },
           text,
           createdAt: moment().format(),
           status
         };
-        dispatch(updateCurrentUserWordCount(totalWords));
-        return database.ref(`rooms/${roomName}/messages`).push(message);
+          dispatch(updateCurrentUserWordCount(totalWords));
+          return database.ref(`rooms/${roomName}/messages`).push(message);
         }else{
           //this is the second protection. The words should be blocked in the UI first. If is any problem there will catch here and not save more 140 words in db.
-          console.log('User submitted more than 140 words');
+          console.log('Error: User submitted more than 140 words');
         }
       }else{
-        console.log('user Not found in Room');
+        console.log('Error: User Not found in Room');
       }
     }
   };

@@ -65,7 +65,7 @@ export const insertBlockWords = (word) => {
         const dbRef =  database.ref(`blockedWords/${saveWord}`).set(saveWord).then((snapshot)=>{
             dispatch(insertBlockWordsSuccess(saveWord));
         }).catch(error => {
-            console.log('errrrrrrrrrorrrrrrrrrrrr', error);
+            console.log('Error: ', error);
             dispatch(insertBlockWordsError(error));
         });
     }

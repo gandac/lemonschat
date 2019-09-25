@@ -20,13 +20,9 @@ export default (state=defaultState, action) => {
       });
 
     case 'ON_LEFT': 
-    // console.log('onleft');
-    
       return state.map((room) => {
-        // console.log(room);
         if(room.name === action.roomName) {
           const p = room.people.filter((pe) => {return pe.id !== action.personID});
-          // console.log(p);
           return {
             ...room,
             people: p
@@ -58,45 +54,11 @@ export default (state=defaultState, action) => {
           return room;
         }
       });
-    // case 'REORDER_ROOMS':
-    //   let room;
-    //   let rooms = state.filter((r) => {
-    //     if(r.name === action.roomName) {
-    //       room = r;
-    //       return false;
-    //     }
-    //     else {
-    //       return true;
-    //     }
-    //   });
-    //   rooms.unshift(room);
-    //   return rooms;
+      
     case 'ORDER_ROOMS_START_STATE':
-      //  const x =  action.rooms.sort((a, b) => {
-      //   //  console.log('a', a);
-      //   //  console.log('b', b);
-      //   if(a.messages.length > 0 && b.messages.length > 0) {
-      //     console.log(typeof a.messages);
-          
-      //     return moment(a.messages[a.messages.length-1].createdAt) > moment(b.messages[b.messages.length-1].createdAt) 
-      //     // {
-      //   //     return -1;
-      //   //   } else {
-      //   //     return 1;
-      //   //   }
-      //   // }
-      //   // else {
-      //   //   return -1;
-      //   }
-      // });
-      // console.log(typeof x)      
-      // console.log(x);
-      // return x;
-      state.sort((a,b) => {
-          return moment(a.messages[a.messages.length-1].createdAt) < moment(b.messages[b.messages.length-1].createdAt);
+     return state.sort((a,b) => {
+          return a.date - b.date;
       });
-      // console.log(state);
-      return state.map((room) => room);
 
     case 'CLEAR_UNREAD':
       return state.map((room) => {
