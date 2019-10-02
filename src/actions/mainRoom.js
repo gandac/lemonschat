@@ -63,8 +63,9 @@ export const startListening = (roomName) => {
         database.ref(`rooms/${roomName}/people`).once('value', (personSnapshot) => {            
           const message = msgSnapshot.val();
           if([ MESSAGE_CODE_VIDEO_1 , MESSAGE_CODE_VIDEO_2 ].includes(message.text.trim().toLowerCase() ) ){
-           // alert('Trigger Video');
+           if(! message.sender.isAnonymous ){
             dispatch(triggerVideo(message.text.trim().toLowerCase()));
+           }
           }
           let messageHandled = obfuscateWords(message.text , state.blockedWords )
           message.text = messageHandled.text;
@@ -72,7 +73,6 @@ export const startListening = (roomName) => {
           dispatch(sendMessage({ ...message, id: msgSnapshot.key }, roomName));
           dispatch(orderRoomsStartState()) ;
           if(message.sender.displayName!==getState().auth.displayName) {
-            // ipcRenderer.send('playNotif', message.sender.displayName, message.text);
             const audio = new Audio('/sounds/notif.mp3');
             audio.play();
           }

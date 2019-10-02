@@ -80,7 +80,7 @@ export class RoomPage extends React.Component {
           <button onClick={this.handleLeaveRoom} className="button--leave-room hide-below-960" style={{"display":"none"}}>Leave room</button>
           <button onClick={this.showPeople} className="button--leave-room hide-below-960">View People</button>
         </div>
-        <Messages roomName={this.roomName} />
+        <Messages roomName={this.roomName} adminView />
         <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
           <input type="text" name="message" className="text-input" placeholder="Send message" autoFocus />
           <button name="submit" className="login-button">Send</button>

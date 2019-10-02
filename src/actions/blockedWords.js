@@ -1,6 +1,5 @@
-import database, { firebase } from '../firebase/firebase';
+import database from '../firebase/firebase';
 import * as actionTypes from './types';
-
 
 const getBlockWordsRequest = () => {
     return {
@@ -14,6 +13,7 @@ const getBlockWordsSuccess= (action) => {
         blockedWords: action
     }
 }
+
 const getBlockWordsError= (error) => {
     return {
         type: actionTypes.GET_BLOCKED_WORDS_ERROR,
@@ -50,6 +50,7 @@ const insertBlockWordsSuccess = (word) => {
         blockWord: word
     }
 }
+
 const insertBlockWordsError = (error) => {
     return {
         type: actionTypes.INSERT_BLOCK_WORD_ERROR,
@@ -70,7 +71,6 @@ export const insertBlockWords = (word) => {
         });
     }
 }
-
 
 const removeBlockWordsRequest = () => {
     return {

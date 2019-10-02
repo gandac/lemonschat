@@ -2,9 +2,6 @@ import database, { firebase } from '../firebase/firebase';
 import { history } from '../routers/AppRouter';
 import moment from 'moment';
 import * as path from 'path';
-// import { ipcRenderer } from 'electron';
-
-
 
 export const createRoom = ({ id, name, people, date, messages = [] }) => ({
   type: 'CREATE_ROOM',
@@ -16,7 +13,6 @@ export const createRoom = ({ id, name, people, date, messages = [] }) => ({
     messages
   }
 });
-
 
 export const startCreateRoom = (roomper = {}, showCreateError) => {
   return (dispatch, getState) => {
@@ -55,7 +51,6 @@ export const startCreateRoom = (roomper = {}, showCreateError) => {
     });
   };
 };
-
 
 export const startListening = (roomName) => {
   return (dispatch, getState) => {

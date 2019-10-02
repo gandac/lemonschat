@@ -40,14 +40,14 @@ class Messages extends React.Component {
     }
     let a = [],  prevSender;
     messages.forEach((message) => {
-      const name = message.sender.anonimNumber ? message.sender.anonimNumber : 'Lemonschat';
+      const name = message.sender.anonimNumber ? message.sender.anonimNumber : message.sender.displayName;
       const time = moment(message.createdAt).format('H:mm');
       const words = <span> words remaining: {message.sender.totalWords}</span>
       const text = <p className="message__text">{message.text}</p>;
       if(message.status) {
         a.push(<MessageItem key={message.id} name={name + ' joined'} time={time} words={words} id={message.id} isObfuscated={message.isObfuscated}/>);
         prevSender = null;
-      }else if( !message.sender.isAnonymous ) {
+      }else if( !message.sender.isAnonymous && !this.props.adminView ) {
         a.push(<MessageItem key={message.id} time={time} text={text} id={message.id} isObfuscated={message.isObfuscated}/>);
       }else if(prevSender === message.sender.uid) {
         a.push(<MessageItem key={message.id} name={name} time={time} words={words} text={text} id={message.id} isObfuscated={message.isObfuscated}/>);

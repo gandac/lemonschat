@@ -42,7 +42,8 @@ export const startLogin = () => {
   return () => {
     // return firebase.auth().signInWithPopup(googleAuthProvider);
    return firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function(result) {
+   
+   firebase.auth().getRedirectResult().then(function(result) {
       // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       var token = result.credential.accessToken;
       // The signed-in user info.
