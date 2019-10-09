@@ -63,9 +63,9 @@ export const startListening = (roomName) => {
         database.ref(`rooms/${roomName}/people`).once('value', (personSnapshot) => {            
           const message = msgSnapshot.val();
           if([ MESSAGE_CODE_VIDEO_1 , MESSAGE_CODE_VIDEO_2 ].includes(message.text.trim().toLowerCase() ) ){
-           if(! message.sender.isAnonymous ){
+          //  if(! message.sender.isAnonymous ){
             dispatch(triggerVideo(message.text.trim().toLowerCase()));
-           }
+          //  }
           }
           let messageHandled = obfuscateWords(message.text , state.blockedWords )
           message.text = messageHandled.text;

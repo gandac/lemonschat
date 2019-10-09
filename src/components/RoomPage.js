@@ -47,24 +47,11 @@ export class RoomPage extends React.Component {
     this.setState({ showModal: false });
   }
 
-  // componentDidMount() {
-  //   const rooms = this.props.rooms;
-  //   if (rooms.length > 0) {
-  //     const a = rooms.find((room) => {
-  //       return room.name === this.roomName;
-  //     });
-  //     const roomPath = a.id;
-  //     this.props.startClearUnread(roomPath, this.roomName);
-  //   }
-  // }
-
   componentDidUpdate() {
     const rooms = this.props.rooms;
     if (rooms.length > 0) {
       const a = rooms.find((room) => {
         return room.name === this.roomName;
-        // const roomPath = a.id;
-        // this.props.startClearUnread(this.roomName);
       });
       
     }
@@ -75,7 +62,6 @@ export class RoomPage extends React.Component {
       <div className="box-layout--messages">
         <div className="room-header">
         <Link to="/admin" className="button--leave-room buttonBackToAdmin" >Back to admin</Link>
-          
           <div className="room-header__title hide-below-960">{this.props.location.pathname.split('/').slice(-1)[0]}</div>
           <button onClick={this.handleLeaveRoom} className="button--leave-room hide-below-960" style={{"display":"none"}}>Leave room</button>
           <button onClick={this.showPeople} className="button--leave-room hide-below-960">View People</button>

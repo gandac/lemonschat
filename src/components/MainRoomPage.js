@@ -1,45 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { joinLastCreatedRoom , startSendMessage,setEndVideo , removeVideo , countWords}  from '../actions/mainRoom';
+import windowSize from 'react-window-size';
+import { startSendMessage, setEndVideo , removeVideo , countWords}  from '../actions/mainRoom';
 import {getVideos} from '../actions/videos';
-//import { startSendMessage} from '../actions/rooms';
 import Messages from './Messages';
 import VideoModal from '../ui/VideoModal';
-import { removeBlockWords } from '../actions/blockedWords';
 
-// const getMessages = () => {
-
-// }
-
-// const onSubmit = (e) => {
-//   e.preventDefault();
-
-// }
 
 export class RoomPage extends React.Component {
 
-state = {
-showModal: false,
-error: '',
-joinError: ''
-}
-
-componentDidMount(){
-
-    //store.dispatch(login(user.uid, name));
-    const user = this.props.auth;
-    this.props.getVideos();
-
-}
-
-  roomName = this.props.lastRoom.name;
-
-  showJoinError = (joinError) => {
-    this.setState({
-      joinError 
-    });
+  componentDidMount(){
+      this.props.getVideos();
   }
-
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -52,24 +24,13 @@ componentDidMount(){
 
     this.props.startSendMessage(message, this.props.lastRoom.name);
     e.target.reset();
+
   }
 
-
-  componentDidUpdate() {
-    const rooms = this.props.rooms;
-    if (rooms.length > 0) {
-      const a = rooms.find((room) => {
-        return room.name === this.props.lastRoom.name;
-        // const roomPath = a.id;
-         this.props.startClearUnread(this.roomName);
-      });
-      
-    }
-  }
   onEndVideo(e){
-
     this.props.setEndVideo();
   }
+
   onCloseVideo (e) {
     e.preventDefault();
     this.props.removeVideo();
@@ -96,7 +57,6 @@ componentDidMount(){
     console.log('Video Triggered on device!',this.sendMessageInputRef.value);
   }
   render() {
-    
     const {triggerVideo,roomUser} = this.props;
     let hasVideos = false;
     let videoToView = false;
@@ -110,37 +70,33 @@ componentDidMount(){
             this.triggerVideoFront();
         }
     }
-    let remainingWords = 140;
-   
-
+  
     return (
-    <div className='container mainPageWrapper'>
-        
-        <div className="box-layout--messages mainPageBoxLayout">
-        
-                <div className="room-header">
+          <div className='container mainPageWrapper'>
+            <div className="box-layout--messages mainPageBoxLayout">
+              <div className="room-header">
                     <img className="logoImage" src="/images/logo.png" />
                 </div>
-                <Messages roomName={this.props.lastRoom.name} mainRoom />
-                <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
-                    <input type="text"  ref={(ref) => {this.sendMessageInputRef = ref}} name="message" className="text-input" placeholder="Send message" autoFocus onChange={(e)=>this.messageChanged(e)} />
-                    <button name="submit" className="login-button sendMessageButton" >Send</button>
-                </form>
-                
-                {hasVideos ? 
-                
-                    <VideoModal
-                    canClose =  {triggerVideo[0].endVideo}
-                    onEndVideo={() => this.onEndVideo()}
-                    code={videoToView} 
-                    videos={this.props.videos}
-                    inputRef = {this.sendMessageInputRef}
-                    onCloseVideo={(e) => this.onCloseVideo(e)}/>
-                    : ''
-                } 
-         
-        </div>
-    </div>
+
+              <Messages roomName={this.props.lastRoom.name} mainRoom />
+              
+              <form onSubmit={this.onSubmit} autoComplete="off" id="message-form">
+                  <input type="text"  ref={(ref) => {this.sendMessageInputRef = ref}} name="message" className="text-input" placeholder="Send message" autoFocus onChange={(e)=>this.messageChanged(e)} />
+                  <button name="submit" className="login-button sendMessageButton" >Send</button>
+              </form>
+                      
+              {hasVideos && this.props.windowWidth > 500 
+              ? <VideoModal
+                canClose =  {triggerVideo[0].endVideo}
+                onEndVideo={() => this.onEndVideo()}
+                code={videoToView} 
+                videos={this.props.videos}
+                inputRef = {this.sendMessageInputRef}
+                onCloseVideo={(e) => this.onCloseVideo(e)}/>
+              : ''
+              } 
+              </div>
+          </div>
     );
   }
 }
@@ -161,4 +117,4 @@ const mapDispatchToProps = (dispatch) => ({
   getVideos: () => dispatch(getVideos()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomPage);
+export default connect(mapStateToProps, mapDispatchToProps)(windowSize(RoomPage));
